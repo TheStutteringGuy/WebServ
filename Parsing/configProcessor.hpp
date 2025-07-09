@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   configProcessor.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahmed <ahmed@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aahlaqqa <aahlaqqa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 16:54:22 by ahmed             #+#    #+#             */
-/*   Updated: 2025/07/07 15:03:40 by ahmed            ###   ########.fr       */
+/*   Updated: 2025/07/10 00:34:02 by aahlaqqa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,8 @@ public:
   void validateConfig(const std::vector<ServerBlock> &blocks);
 
 private:
-  void processServiceDirective(ServerBlock &blocks);
-  void processLocationDirective(LocationBlock &loction, const ServerBlock &server);
+  void processServerDirective(ServerBlock &blocks);
+  void processLocationDirective(LocationBlock &location, const ServerBlock &server);
   void validatePort(const std::vector<ServerBlock> &blocks);
   void validatePath(const std::vector<ServerBlock> &blocks);
   void setDefaultValue(ServerBlock &server);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahmed <ahmed@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aahlaqqa <aahlaqqa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 20:41:13 by ahmed             #+#    #+#             */
-/*   Updated: 2025/07/07 14:46:39 by ahmed            ###   ########.fr       */
+/*   Updated: 2025/07/09 21:03:01 by aahlaqqa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,14 @@ Parser::Parser() {
 Parser::~Parser() {
 
 };
+
+LocationBlock::LocationBlock() : autoindex(false) {};
+
+LocationBlock::~LocationBlock() {};
+
+ServerBlock::ServerBlock() : port(80), host("0.0.0.0"), clientSizeBody(1048576) {};
+
+ServerBlock::~ServerBlock() {};
 
 const char *Parser::IncorrArgc::what() const throw()
 {
@@ -73,6 +81,16 @@ const char *Parser::NoRoot::what() const throw()
 const char *Parser::InvalidMthode::what() const throw()
 {
     return "Invalid HTTP methode !!";
+};
+
+std::vector<ServerBlock> &Parser::getServerBlock()
+{
+    return (server_blocks);
+};
+
+const std::vector<ServerBlock> &Parser::getServerBlock() const
+{
+    return (server_blocks);
 };
 
 void Parser::trim_spaces(std::string &line)
