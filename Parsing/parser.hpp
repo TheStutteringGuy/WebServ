@@ -6,7 +6,7 @@
 /*   By: ahmed <ahmed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 16:11:52 by aahlaqqa          #+#    #+#             */
-/*   Updated: 2025/07/07 14:47:01 by ahmed            ###   ########.fr       */
+/*   Updated: 2025/07/07 15:10:47 by ahmed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 #include <cctype>
 #include <map>
 #include <set>
+#include "configProcessor.hpp"
 
 struct Directive
 {
@@ -35,14 +36,36 @@ struct Directive
 
 struct LocationBlock
 {
+    LocationBlock();
+    ~LocationBlock();
+    
     std::string path;
     std::vector<Directive> directives;
+
+    std::string root;
+    std::string index;
+    std::vector<std::string> allowed_methods;
+    bool autoindex;
+    std::string redirect_url;
+    std::string cgi_path;
+    std::vector<std::string> cgi_extention;
 };
 
 struct ServerBlock
 {
+    ServerBlock();
+    ~ServerBlock();
+    
     std::vector<Directive> directives;
     std::vector<LocationBlock> locationBlocks;
+
+    int port;
+    std::string server_name;
+    std::string host;
+    std::string root;
+    std::string index;
+    std::map<int, std::string> error_pages;
+    size_t clientSizeBody;
 };
 
 class Parser
@@ -60,6 +83,9 @@ public:
     ServerBlock parsServerBlock(size_t &i);
     LocationBlock parsLocationBlock(size_t &i);
     Directive parsDirectiveBlock(size_t &i);
+
+    std::vector<ServerBlock> &getServerBlock();
+    const std::vector<ServerBlock> &getServerBlock() const;
 
     void printConfig();
 

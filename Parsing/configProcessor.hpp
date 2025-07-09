@@ -6,7 +6,7 @@
 /*   By: ahmed <ahmed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 16:54:22 by ahmed             #+#    #+#             */
-/*   Updated: 2025/07/01 16:56:34 by ahmed            ###   ########.fr       */
+/*   Updated: 2025/07/07 15:03:40 by ahmed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,46 @@
 
 class ConfigProcessor
 {
+public:
   ConfigProcessor();
   ~ConfigProcessor();
 
-  
+  void processServerBlock(std::vector<ServerBlock> &blocks);
+  void validateConfig(const std::vector<ServerBlock> &blocks);
+
+private:
+  void processServiceDirective(ServerBlock &blocks);
+  void processLocationDirective(LocationBlock &loction, const ServerBlock &server);
+  void validatePort(const std::vector<ServerBlock> &blocks);
+  void validatePath(const std::vector<ServerBlock> &blocks);
+  void setDefaultValue(ServerBlock &server);
+  void setLocation(LocationBlock &location, const ServerBlock &server);
+
+  int stringToInt(const std::string &str);
+  bool isValidPort(int port);
+  bool existFile(const std::string &path);
+  bool existDirectory(const std::string &path);
+  std::string handlePath(const std::string &base, const std::string &path);
+
+  class InvalidPortException : public std::exception
+  {
+    virtual const char *what() const throw();
+  };
+
+  class DuplicatePortEXception : public std::exception
+  {
+    virtual const char *what() const throw();
+  };
+
+  class InvalidPathException : public std::exception
+  {
+    virtual const char *what() const throw();
+  };
+
+  class InvalidDirectiveException : public std::exception
+  {
+    virtual const char *what() const throw();
+  };
 };
 
 #endif
