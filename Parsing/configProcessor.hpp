@@ -6,7 +6,7 @@
 /*   By: aahlaqqa <aahlaqqa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 16:54:22 by ahmed             #+#    #+#             */
-/*   Updated: 2025/07/10 00:34:02 by aahlaqqa         ###   ########.fr       */
+/*   Updated: 2025/07/10 17:31:27 by aahlaqqa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #define CONFIGPROCESSOR_HPP
 
 #include <iostream>
+#include <sstream>
 #include <fstream>
 #include <string>
 #include <fcntl.h>
@@ -26,7 +27,10 @@
 #include <cctype>
 #include <map>
 #include <set>
-#include "parser.hpp"
+#include <sys/stat.h>
+
+struct ServerBlock;
+struct LocationBlock;
 
 class ConfigProcessor
 {

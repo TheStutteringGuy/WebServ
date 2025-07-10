@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: ahmed <ahmed@student.42.fr>                +#+  +:+       +#+         #
+#    By: aahlaqqa <aahlaqqa@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/06/02 16:37:10 by aahlaqqa          #+#    #+#              #
-#    Updated: 2025/07/07 14:42:49 by ahmed            ###   ########.fr        #
+#    Updated: 2025/07/10 17:38:29 by aahlaqqa         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ CXX= c++
 
 CXXFLAGS= -Wall -Wextra -Werror -std=c++98
 
-SOURCES= main.cpp parser.cpp
+SOURCES= main.cpp parser.cpp configProcessor.cpp
 
 OBJECTS= $(SOURCES:.cpp=.o)
 

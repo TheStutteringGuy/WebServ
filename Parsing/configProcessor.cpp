@@ -6,11 +6,12 @@
 /*   By: aahlaqqa <aahlaqqa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 16:54:24 by ahmed             #+#    #+#             */
-/*   Updated: 2025/07/10 00:40:36 by aahlaqqa         ###   ########.fr       */
+/*   Updated: 2025/07/10 17:44:04 by aahlaqqa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "configProcessor.hpp"
+#include "parser.hpp"
 
 ConfigProcessor::ConfigProcessor() {
 
@@ -103,6 +104,7 @@ void ConfigProcessor::processServerDirective(ServerBlock &blocks)
 
 void ConfigProcessor::processLocationDirective(LocationBlock &location, const ServerBlock &server)
 {
+    (void)server;
     for (size_t i = 0; i < location.directives.size(); i++)
     {
         const Directive &dir = location.directives[i];
@@ -162,19 +164,32 @@ void ConfigProcessor::validatePath(const std::vector<ServerBlock> &blocks)
     for (size_t i = 0; i < blocks.size(); i++)
     {
         const ServerBlock &server = blocks[i];
+        std::cout << "Checking server root: " << server.root << std::endl;
         if (!existDirectory(server.root))
+        {
+            std::cout << "ERROR: Server root directory does not exist: " << server.root << std::endl;
             throw InvalidPathException();
+        }
+
         for (std::map<int, std::string>::const_iterator it = server.error_pages.begin(); it != server.error_pages.end(); it++)
         {
             std::string fullPath = handlePath(server.root, it->second);
             if (!existFile(fullPath))
+            {
+                std::cout << "ERROR: Error page file does not exist: " << fullPath << std::endl;
                 throw InvalidPathException();
+            }
         }
         for (size_t j = 0; j < server.locationBlocks.size(); j++)
         {
             const LocationBlock &location = server.locationBlocks[i];
+            std::cout << "Checking location root: " << location.root << std::endl;
+
             if (!existDirectory(location.root))
+            {
+                std::cout << "ERROR: Location root directory does not exist: " << location.root << std::endl;
                 throw InvalidPathException();
+            }
         }
     }
 };
@@ -184,9 +199,82 @@ void ConfigProcessor::setDefaultValue(ServerBlock &server)
     if (server.port == 80 && server.host == "0.0.0.0")
     {
         // guys this is a do nothing block because i already set it in the serverblock constructor :)
+        // And it's not neccery to use it in the first place
     }
     if (server.server_name.empty())
         server.server_name = "localhost";
     if (server.index.empty())
         server.index = "index.html";
+};
+
+void ConfigProcessor::setLocation(LocationBlock &location, const ServerBlock &server)
+{
+    if (location.root.empty())
+        location.root = server.root; // here if the root of the location block is empty i inherit it from the serever root
+    if (location.index.empty())
+        location.index = server.index; // the same thing here too
+    if (location.allowed_methods.empty())
+    {
+        location.allowed_methods.push_back("GET");
+        location.allowed_methods.push_back("POST");
+        location.allowed_methods.push_back("DELETE");
+    }
+};
+
+int ConfigProcessor::stringToInt(const std::string &str)
+{
+    std::stringstream ss(str);
+    int res;
+
+    ss >> res;
+    if (ss.fail())
+        throw InvalidDirectiveException();
+    return (res);
+};
+
+bool ConfigProcessor::isValidPort(int port)
+{
+    if (port > 0 && port <= 65535)
+        return (true);
+    else
+        return (false);
+
+    // 1-1023: Well-known ports for example :  (HTTP=80, HTTPS=443, SSH=22 ...)
+    // 1024-49151: Registered ports
+    // 49152-65535: Dynamic/private ports
+};
+
+bool ConfigProcessor::existFile(const std::string &path)
+{
+    struct stat buffer;
+    if (stat(path.c_str(), &buffer) != 0)
+        return (false);
+    if (S_ISREG(buffer.st_mode))
+        return (true);
+    else
+        return (false);
+};
+
+bool ConfigProcessor::existDirectory(const std::string &path)
+{
+    struct stat buffer;
+    if (stat(path.c_str(), &buffer) != 0)
+        return (false);
+    if (S_ISDIR(buffer.st_mode))
+        return (true);
+    else
+        return (false);
+};
+
+std::string ConfigProcessor::handlePath(const std::string &base, const std::string &path)
+{
+    if (path.empty())
+        return (base); // return base directory if path is empty
+    if (path[0] == '/')
+        return (path); // return the absolute path
+    std::string res = base;
+    if (!res.empty() && res[res.length() - 1] != '/')
+        res += "/";
+    res += path;
+    return (res); // return the full path after combination
 };
