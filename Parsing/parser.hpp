@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahmed <ahmed@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aahlaqqa <aahlaqqa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 16:11:52 by aahlaqqa          #+#    #+#             */
-/*   Updated: 2025/07/07 15:10:47 by ahmed            ###   ########.fr       */
+/*   Updated: 2025/07/12 22:10:07 by aahlaqqa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ struct LocationBlock
     bool autoindex;
     std::string redirect_url;
     std::string cgi_path;
+    std::string upload_path;
     std::vector<std::string> cgi_extention;
 };
 
@@ -163,6 +164,8 @@ public:
         OPEN_BRACET,
         SEMICOLN,
         ARGUMENT,
+        CLIENT_MAX_BODY_SIZE,
+        UPLOAD_PATH,
         UNKNOWN
     };
 

@@ -6,7 +6,7 @@
 /*   By: aahlaqqa <aahlaqqa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/02 17:50:13 by aahlaqqa          #+#    #+#             */
-/*   Updated: 2025/07/10 17:32:57 by aahlaqqa         ###   ########.fr       */
+/*   Updated: 2025/07/12 22:14:49 by aahlaqqa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,8 @@ int main(int argc, char **argv)
 
                 if (!loc.cgi_path.empty())
                     std::cout << "    CGI Path: " << loc.cgi_path << std::endl;
+                if (!loc.upload_path.empty())
+                    std::cout << "    Upload Path: " << loc.upload_path << std::endl;
             }
         }
     }

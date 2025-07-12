@@ -6,7 +6,7 @@
 /*   By: aahlaqqa <aahlaqqa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 16:54:24 by ahmed             #+#    #+#             */
-/*   Updated: 2025/07/10 17:44:04 by aahlaqqa         ###   ########.fr       */
+/*   Updated: 2025/07/12 22:13:45 by aahlaqqa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,6 +137,11 @@ void ConfigProcessor::processLocationDirective(LocationBlock &location, const Se
         }
         else if (dir.name == "cgi_ext")
             location.cgi_extention = dir.values;
+        else if (dir.name == "upload_path")
+        {
+            if (!dir.values.empty())
+                location.upload_path = dir.values[0];
+        }
     }
 };
 
@@ -182,7 +187,7 @@ void ConfigProcessor::validatePath(const std::vector<ServerBlock> &blocks)
         }
         for (size_t j = 0; j < server.locationBlocks.size(); j++)
         {
-            const LocationBlock &location = server.locationBlocks[i];
+            const LocationBlock &location = server.locationBlocks[j];
             std::cout << "Checking location root: " << location.root << std::endl;
 
             if (!existDirectory(location.root))
@@ -219,6 +224,8 @@ void ConfigProcessor::setLocation(LocationBlock &location, const ServerBlock &se
         location.allowed_methods.push_back("POST");
         location.allowed_methods.push_back("DELETE");
     }
+    if (location.upload_path.empty())
+        location.upload_path = "";
 };
 
 int ConfigProcessor::stringToInt(const std::string &str)

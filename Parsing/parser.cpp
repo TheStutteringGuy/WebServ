@@ -6,7 +6,7 @@
 /*   By: aahlaqqa <aahlaqqa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 20:41:13 by ahmed             #+#    #+#             */
-/*   Updated: 2025/07/09 21:03:01 by aahlaqqa         ###   ########.fr       */
+/*   Updated: 2025/07/12 22:09:41 by aahlaqqa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,6 +148,8 @@ const std::map<std::string, Parser::Lexical> &Parser::get_token()
         tokens["return"] = Parser::RETURN;
         tokens["cgi_path"] = Parser::CGI_PATH;
         tokens["cgi_ext"] = Parser::CGI_EX;
+        tokens["client_max_body_size"] = Parser::CLIENT_MAX_BODY_SIZE;
+        tokens["upload_path"] = Parser::UPLOAD_PATH;
     }
     return (tokens);
 };
@@ -333,6 +335,8 @@ void Parser::validatConfig() const
     validDirectives.insert("return");
     validDirectives.insert("cgi_path");
     validDirectives.insert("cgi_ext");
+    validDirectives.insert("client_max_body_size");
+    validDirectives.insert("upload_path");
 
     for (size_t i = 0; i < server_blocks.size(); i++)
     {
