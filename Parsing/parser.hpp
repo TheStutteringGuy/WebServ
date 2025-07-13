@@ -6,7 +6,7 @@
 /*   By: aahlaqqa <aahlaqqa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 16:11:52 by aahlaqqa          #+#    #+#             */
-/*   Updated: 2025/07/12 22:10:07 by aahlaqqa         ###   ########.fr       */
+/*   Updated: 2025/07/13 16:04:08 by aahlaqqa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,8 +170,6 @@ public:
     };
 
     // Lexical functions
-
-    const char *lexical_to_string(Parser::Lexical type);
     Parser::Lexical get_token_type(const std::string &token);
     const std::map<std::string, Parser::Lexical> &get_token();
     void validatConfig() const;

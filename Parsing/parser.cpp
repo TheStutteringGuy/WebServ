@@ -6,7 +6,7 @@
 /*   By: aahlaqqa <aahlaqqa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 20:41:13 by ahmed             #+#    #+#             */
-/*   Updated: 2025/07/12 22:09:41 by aahlaqqa         ###   ########.fr       */
+/*   Updated: 2025/07/13 16:04:15 by aahlaqqa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,49 +170,6 @@ Parser::Lexical Parser::get_token_type(const std::string &token)
         return (it->second);
     return (Parser::ARGUMENT);
 };
-const char *Parser::lexical_to_string(Parser::Lexical type)
-{
-    switch (type)
-    {
-    case Parser::SERVER:
-        return "SERVER";
-    case Parser::LISTEN:
-        return "LISTEN";
-    case Parser::SERVER_NAME:
-        return "SERVER_NAME";
-    case Parser::HOST:
-        return "HOST";
-    case Parser::ROOT:
-        return "ROOT";
-    case Parser::INDEX:
-        return "INDEX";
-    case Parser::ERROR:
-        return "ERROR";
-    case Parser::LOCATION:
-        return "LOCATION";
-    case Parser::METHODS:
-        return "METHODS";
-    case Parser::AUTOINDEX:
-        return "AUTOINDEX";
-    case Parser::RETURN:
-        return "RETURN";
-    case Parser::CGI_PATH:
-        return "CGI_PATH";
-    case Parser::CGI_EX:
-        return "CGI_EX";
-
-    case Parser::OPEN_BRACET:
-        return "OPEN_BRACE";
-    case Parser::CLOSED_BRACET:
-        return "CLOSE_BRACE";
-    case Parser::SEMICOLN:
-        return "SEMICOLON";
-    case Parser::ARGUMENT:
-        return "ARGUMENT";
-    default:
-        return "UNKNOWN";
-    }
-};
 
 void Parser::Tokenization(int argc, char **argv)
 {
@@ -236,10 +193,6 @@ void Parser::Tokenization(int argc, char **argv)
         Lexical type = get_token_type(tokens[i]);
         lexical_vector.push_back(std::make_pair(tokens[i], type));
     }
-    // for (size_t i = 0; i < lexical_vector.size(); ++i)
-    //     std::cout << lexical_vector[i].first << " -> " << lexical_to_string(lexical_vector[i].second) << std::endl;
-    // for (size_t i = 0; i < tokens.size(); i++)
-    //     std::cout << tokens[i] << std::endl;
     return;
 };
 
