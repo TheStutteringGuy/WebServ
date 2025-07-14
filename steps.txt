@@ -1,0 +1,36 @@
+=================== This is the steps i did from the beginning to now =======================================
+
+Step 1 : Configuration and parsing of Config file (like NGINX)
+    - I create a Parser class to tokenize and configurate the config file.
+    - I implement a validation logic for my parser to check the required directives for ex : host, root, index , por ...
+    - I store this configuration in 3 main structs (ServerBlock, DirectiveBlock, LocationBlock).
+    - And finally i check and print those configuration (just for debuging).
+
+Step 2 : Set up the WebServer (Listening sockets)
+    -I create a WebServer class.
+    - For each ServerBlock of my config file i :
+        * I create a Socket.
+        * I set the Socket to non-blocking mode.
+        * I set the Socket options to => SO_REUSEADDR
+        * I bind the Socket to a specifie host and port.
+        * I start listening on the Socket.
+    - Finally i store all the listening socket in a vector for monitoring.
+
+Step 3 : Main event loop with a single poll() (because it's required in the subject)
+    - I Initialize a pollfd vector that contain all listening socket to monitor them for POLLIN event.
+    - Start the main loop :
+        * Call poll once per loop (because again it's required in the subject) and monitoring all server , client sockets.
+        * If pool detect a listening socket that is ready it calls accept function to accept new  client connections.
+        * Finally set the new accepted socket to non-blocking and i add them  in my pollfd vector (for later work).
+        * Print some debug message in success.
+
+=============> To test the work, make then open the terminal and type : webserv config/test.conf then a message like this gonna shows in your terminal:
+Checking server root: ./
+Configuration processed successfully!
+Listening on : 0.0.0.0:8080 fd = ( 3 )
+
+
+then open another terminal and type :  curl http://localhost:8080/ then you gonna see in the first terminal a success message like this one :
+Accepted client : 4 from : 127.0.0.1:42088
+
+and the seconde terminal gonna wait then close the connection by pressing CTR+C
