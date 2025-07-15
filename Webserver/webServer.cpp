@@ -6,7 +6,7 @@
 /*   By: ahmed <ahmed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 15:15:01 by ahmed             #+#    #+#             */
-/*   Updated: 2025/07/14 18:17:40 by ahmed            ###   ########.fr       */
+/*   Updated: 2025/07/15 16:28:05 by ahmed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,26 +112,63 @@ void WebServer::mainEventLoop()
 {
     while (true)
     {
-        int res;
-        res = poll(&pollfds[0], pollfds.size(), -1);
+        int res = poll(&pollfds[0], pollfds.size(), -1);
         if (res < 0)
         {
             std::cerr << "Poll failed : " << strerror(errno) << std::endl;
             break;
         }
-        // loop over the listening sockets
-        for (size_t i = 0; i < listeningSocket.size(); i++)
+
+        size_t n = pollfds.size();
+        for (size_t i = 0; i < n; ++i)
         {
-            // check here if the socket is ready to read
-            if (pollfds[i].revents && POLLIN)
-                handleNewConnections(i);
+            int fd = pollfds[i].fd;
+            // Check if this is a listening socket
+            bool isListening = false;
+            for (size_t l = 0; l < listeningSocket.size(); ++l)
+            {
+                if (fd == listeningSocket[l].fd)
+                {
+                    isListening = true;
+                    break;
+                }
+            }
+            if (isListening)
+            {
+                if (pollfds[i].revents & POLLIN)
+                    handleNewConnections(i);
+                continue;
+            }
+            // Client socket
+            if (pollfds[i].revents & POLLIN)
+                handleClientRead(fd);
+            if (pollfds[i].revents & POLLOUT)
+                handleClientWrite(fd);
+        }
+
+        // Remove disconnected clients here
+        for (size_t i = 0; i < pollfds.size();)
+        {
+            int fd = pollfds[i].fd;
+            bool isListening = false;
+            for (size_t l = 0; l < listeningSocket.size(); ++l)
+                if (fd == listeningSocket[l].fd)
+                    isListening = true;
+            if (!isListening && clients.count(fd) && clients[fd].disconnect)
+            {
+                close(fd);
+                pollfds.erase(pollfds.begin() + i);
+                clients.erase(fd);
+            }
+            else
+                ++i;
         }
     }
-};
+}
 
 void WebServer::handleNewConnections(size_t listen_idx)
 {
-    int listenFd = pollfds[listen_idx].fd; // get the listening socket fd
+    int listenFd = pollfds[listen_idx].fd;
     while (true)
     {
         struct sockaddr_in client_addr;
@@ -144,19 +181,56 @@ void WebServer::handleNewConnections(size_t listen_idx)
             std::cerr << "Accept failed : " << strerror(errno) << std::endl;
             break;
         }
-        // here i make the client socket non_blocking
         setNonBlocking(client_fd);
         std::cout << "Accepted client : " << client_fd << " from : " << inet_ntoa(client_addr.sin_addr) << ":" << ntohs(client_addr.sin_port) << std::endl;
-        // for clarify this function inet_ntoa() is to convert a binary ip address to a dotted_string ex :  "192.168.1.100"
-        // and the ntohs() function is for convert form network order to host byte order ex : from 0x5000 to 80
-        // now we add the client to the poll set
         struct pollfd client_pfd;
         client_pfd.fd = client_fd;
         client_pfd.events = POLLIN;
         client_pfd.revents = 0;
         pollfds.push_back(client_pfd);
+        clients[client_fd] = Client(client_fd);
     }
-};
+}
+
+void WebServer::handleClientRead(int fd)
+{
+    char buf[1024];
+    ssize_t n = recv(fd, buf, sizeof(buf), 0);
+    if (n <= 0)
+    {
+        clients[fd].disconnect = true;
+        return;
+    }
+    clients[fd].requestBuffer.append(buf, n);
+    if (clients[fd].requestBuffer.find("\r\n\r\n") != std::string::npos)
+    {
+        const char *resp = "HTTP/1.1 200 OK\r\nContent-Length: 14\r\nConnection: close\r\n\r\nHello, world!\n";
+        clients[fd].responseBuffer = resp;
+        clients[fd].responseDone = false;
+        // i Switch here to POLLOUT for this fd
+        for (size_t i = 0; i < pollfds.size(); ++i)
+            if (pollfds[i].fd == fd)
+                pollfds[i].events = POLLOUT;
+    }
+}
+
+void WebServer::handleClientWrite(int fd)
+{
+    if (clients[fd].responseDone)
+        return;
+    ssize_t n = send(fd, clients[fd].responseBuffer.c_str(), clients[fd].responseBuffer.size(), 0);
+    if (n <= 0)
+    {
+        clients[fd].disconnect = true;
+        return;
+    }
+    clients[fd].responseBuffer.erase(0, n);
+    if (clients[fd].responseBuffer.empty())
+    {
+        clients[fd].responseDone = true;
+        clients[fd].disconnect = true;
+    }
+}
 
 void WebServer::closeSockets()
 {
@@ -164,4 +238,5 @@ void WebServer::closeSockets()
         close(pollfds[i].fd);
     pollfds.clear();
     listeningSocket.clear();
-};
+    clients.clear();
+}

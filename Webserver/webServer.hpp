@@ -6,7 +6,7 @@
 /*   By: ahmed <ahmed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 15:15:05 by ahmed             #+#    #+#             */
-/*   Updated: 2025/07/14 16:04:20 by ahmed            ###   ########.fr       */
+/*   Updated: 2025/07/15 16:27:12 by ahmed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
 #include <arpa/inet.h>
 #include <poll.h>
 #include "../Parsing/parser.hpp"
+#include "client.hpp"
 
 struct ListeningSocket
 {
@@ -47,6 +48,7 @@ public:
 private:
     std::vector<ListeningSocket> listeningSocket;
     std::vector<struct pollfd> pollfds;
+    std::map<int, Client> clients; //like <client_fd, Client>
 
     bool setupListeningSocket(const std::vector<ServerBlock> &servers);
     bool setNonBlocking(int fd);
@@ -54,6 +56,8 @@ private:
     void mainEventLoop();
 
     void handleNewConnections(size_t listen_idx);
+    void handleClientRead(int fd);
+    void handleClientWrite(int fd);
 };
 
 #endif
