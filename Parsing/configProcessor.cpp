@@ -6,7 +6,7 @@
 /*   By: aahlaqqa <aahlaqqa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 16:54:24 by ahmed             #+#    #+#             */
-/*   Updated: 2025/07/12 22:13:45 by aahlaqqa         ###   ########.fr       */
+/*   Updated: 2025/07/16 19:31:52 by aahlaqqa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,7 +169,7 @@ void ConfigProcessor::validatePath(const std::vector<ServerBlock> &blocks)
     for (size_t i = 0; i < blocks.size(); i++)
     {
         const ServerBlock &server = blocks[i];
-        std::cout << "Checking server root: " << server.root << std::endl;
+        //std::cout << "Checking server root: " << server.root << std::endl;
         if (!existDirectory(server.root))
         {
             std::cout << "ERROR: Server root directory does not exist: " << server.root << std::endl;
@@ -188,7 +188,7 @@ void ConfigProcessor::validatePath(const std::vector<ServerBlock> &blocks)
         for (size_t j = 0; j < server.locationBlocks.size(); j++)
         {
             const LocationBlock &location = server.locationBlocks[j];
-            std::cout << "Checking location root: " << location.root << std::endl;
+            //std::cout << "Checking location root: " << location.root << std::endl;
 
             if (!existDirectory(location.root))
             {

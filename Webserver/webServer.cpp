@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   webServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahmed <ahmed@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aahlaqqa <aahlaqqa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 15:15:01 by ahmed             #+#    #+#             */
-/*   Updated: 2025/07/15 16:28:05 by ahmed            ###   ########.fr       */
+/*   Updated: 2025/07/16 19:56:17 by aahlaqqa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,9 +125,9 @@ void WebServer::mainEventLoop()
             int fd = pollfds[i].fd;
             // Check if this is a listening socket
             bool isListening = false;
-            for (size_t l = 0; l < listeningSocket.size(); ++l)
+            for (size_t j = 0; j < listeningSocket.size(); j++)
             {
-                if (fd == listeningSocket[l].fd)
+                if (fd == listeningSocket[j].fd)
                 {
                     isListening = true;
                     break;
@@ -151,8 +151,8 @@ void WebServer::mainEventLoop()
         {
             int fd = pollfds[i].fd;
             bool isListening = false;
-            for (size_t l = 0; l < listeningSocket.size(); ++l)
-                if (fd == listeningSocket[l].fd)
+            for (size_t j = 0; j < listeningSocket.size(); j++)
+                if (fd == listeningSocket[j].fd)
                     isListening = true;
             if (!isListening && clients.count(fd) && clients[fd].disconnect)
             {
@@ -182,7 +182,7 @@ void WebServer::handleNewConnections(size_t listen_idx)
             break;
         }
         setNonBlocking(client_fd);
-        std::cout << "Accepted client : " << client_fd << " from : " << inet_ntoa(client_addr.sin_addr) << ":" << ntohs(client_addr.sin_port) << std::endl;
+        std::cout << "Accepted client : fd( " << client_fd << " ) => from : " << inet_ntoa(client_addr.sin_addr) << ":" << ntohs(client_addr.sin_port) << std::endl;
         struct pollfd client_pfd;
         client_pfd.fd = client_fd;
         client_pfd.events = POLLIN;
