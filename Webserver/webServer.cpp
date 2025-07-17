@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   webServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aahlaqqa <aahlaqqa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ahmed <ahmed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 15:15:01 by ahmed             #+#    #+#             */
-/*   Updated: 2025/07/16 19:56:17 by aahlaqqa         ###   ########.fr       */
+/*   Updated: 2025/07/17 17:41:42 by ahmed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -204,13 +204,29 @@ void WebServer::handleClientRead(int fd)
     clients[fd].requestBuffer.append(buf, n);
     if (clients[fd].requestBuffer.find("\r\n\r\n") != std::string::npos)
     {
-        const char *resp = "HTTP/1.1 200 OK\r\nContent-Length: 14\r\nConnection: close\r\n\r\nHello, world!\n";
-        clients[fd].responseBuffer = resp;
-        clients[fd].responseDone = false;
-        // i Switch here to POLLOUT for this fd
-        for (size_t i = 0; i < pollfds.size(); ++i)
-            if (pollfds[i].fd == fd)
-                pollfds[i].events = POLLOUT;
+        if (clients[fd].request.parser(clients[fd].requestBuffer))
+        {
+            std::cout << "Parsed request: Method=" << clients[fd].request.method
+                      << " Path=" << clients[fd].request.path
+                      << " Version=" << clients[fd].request.version << std::endl;
+            const char *resp = "HTTP/1.1 200 OK\r\nContent-Length: 14\r\nConnection: close\r\n\r\nHello, world!\n";
+            clients[fd].responseBuffer = resp;
+            clients[fd].responseDone = false;
+            // i Switch here to POLLOUT for this fd
+            for (size_t i = 0; i < pollfds.size(); ++i)
+                if (pollfds[i].fd == fd)
+                    pollfds[i].events = POLLOUT;
+        }
+        else
+        {
+            // Malformed request
+            const char *resp = "HTTP/1.1 400 Bad Request\r\nContent-Length: 11\r\n\r\nBad Request";
+            clients[fd].responseBuffer = resp;
+            clients[fd].responseDone = false;
+            for (size_t i = 0; i < pollfds.size(); ++i)
+                if (pollfds[i].fd == fd)
+                    pollfds[i].events = POLLOUT;
+        }
     }
 }
 

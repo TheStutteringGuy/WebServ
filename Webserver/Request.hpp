@@ -1,35 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   client.hpp                                         :+:      :+:    :+:   */
+/*   Request.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ahmed <ahmed@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/15 12:21:02 by ahmed             #+#    #+#             */
-/*   Updated: 2025/07/17 17:38:57 by ahmed            ###   ########.fr       */
+/*   Created: 2025/07/17 17:06:32 by ahmed             #+#    #+#             */
+/*   Updated: 2025/07/17 17:10:25 by ahmed            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef CLIENT_HPP
-#define CLIENT_HPP
+#ifndef REQUEST_HPP
+#define REQUEST_HPP
 
+#include <iostream>
 #include <string>
-#include <unistd.h>
-#include "Request.hpp"
+#include <map>
+#include <sstream>
+#include <vector>
 
-class Client
+class Request
 {
 public:
-    Client();
-    Client(int Fd);
-    ~Client();
+    Request();
+    ~Request();
 
-    int fd;
-    std::string responseBuffer;
-    std::string requestBuffer;
-    bool responseDone;
-    bool disconnect;
-    Request request;
+    bool parser(const std::string &str);
+    std::string method;
+    std::string path;
+    std::string version;
+    std::string body;
+    std::map<std::string, std::string> headers;
+
+private:
+    void clear();
 };
 
 #endif
