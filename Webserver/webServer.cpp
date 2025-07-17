@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   webServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahmed <ahmed@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aahlaqqa <aahlaqqa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 15:15:01 by ahmed             #+#    #+#             */
-/*   Updated: 2025/07/17 17:41:42 by ahmed            ###   ########.fr       */
+/*   Updated: 2025/07/17 22:05:10 by aahlaqqa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,7 +209,7 @@ void WebServer::handleClientRead(int fd)
             std::cout << "Parsed request: Method=" << clients[fd].request.method
                       << " Path=" << clients[fd].request.path
                       << " Version=" << clients[fd].request.version << std::endl;
-            const char *resp = "HTTP/1.1 200 OK\r\nContent-Length: 14\r\nConnection: close\r\n\r\nHello, world!\n";
+            const char *resp = "HTTP/1.0 200 OK\r\nContent-Length: 13\r\nConnection: close\r\n\r\nHello, world!";
             clients[fd].responseBuffer = resp;
             clients[fd].responseDone = false;
             // i Switch here to POLLOUT for this fd
@@ -219,7 +219,7 @@ void WebServer::handleClientRead(int fd)
         }
         else
         {
-            // Malformed request
+            // Bad request
             const char *resp = "HTTP/1.1 400 Bad Request\r\nContent-Length: 11\r\n\r\nBad Request";
             clients[fd].responseBuffer = resp;
             clients[fd].responseDone = false;

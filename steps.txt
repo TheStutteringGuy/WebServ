@@ -30,7 +30,7 @@ Configuration processed successfully!
 Listening on : 0.0.0.0:8080 fd = ( 3 )
 
 
-then open another terminal and type :  curl http://localhost:8080/ then you gonna see in the first terminal a success message like this one :
+then open another terminal and type :  curl --http1.0 -i http://localhost:8080/ then you gonna see in the first terminal a success message like this one :
 Accepted client : 4 from : 127.0.0.1:42088
 
 and the seconde terminal gonna wait then close the connection by pressing CTR+C
